@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { CaptainDataContext } from "../context/CaptainContext";
+
 
 const CaptainSignup = () => {
   const [email, setEmail] = useState("");
@@ -7,18 +10,42 @@ const CaptainSignup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userData, setUserData] = useState({});
+  const [vehicleColor, setVehicleColor] = useState("");
+  const [vehiclePlate, setVehiclePlate] = useState("");
+  const [vehicleCapacity, setVehicleCapacity] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
+  const navigate = useNavigate();
+  const {captain,setCaptain} = useContext(CaptainDataContext);
 
-  const submitHandler = (e) => {
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({
-      fullName: { firstName: firstName, lastName: lastName },
+    const CaptainData={
+      fullname: { firstname: firstName, lastname: lastName },
       email: email,
       password: password,
-    });
+      vehicle: {
+        color: vehicleColor,
+        plate: vehiclePlate,
+        capacity: vehicleCapacity,
+        vehicleType: vehicleType,
+      },
+    };
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`, CaptainData);
+    if(response.status===201){
+      const data = response.data;
+      setCaptain(data.captain);
+      localStorage.setItem('token',data.token);
+      navigate('/captain-home');
+    }
     setEmail("");
     setFirstName("");
     setLastName("");
     setPassword("");
+    setVehicleColor("");
+    setVehiclePlate("");
+    setVehicleCapacity("");
+    setVehicleType("");
   };
   return (
     <div className="p-5 h-screen flex flex-col justify-between">
@@ -75,8 +102,50 @@ const CaptainSignup = () => {
             type="password"
             placeholder="password"
           />
+          <h3 className="text-base font-medium mb-2">Vehicle Information</h3>
+          <div className="flex gap-4 mb-5">
+            <input
+              className="bg-[#eeeeee] rounded px-4 py-2 w-1/2 text-base placeholder:text-sm"
+              required
+              type="text"
+              placeholder="Vehicle Color"
+              value={vehicleColor}
+              onChange={(e) => setVehicleColor(e.target.value)}
+            />
+            <input
+              className="bg-[#eeeeee] rounded px-4 py-2 w-1/2 text-base placeholder:text-sm"
+              required
+              type="text"
+              placeholder="Vehicle Plate"
+              value={vehiclePlate}
+              onChange={(e) => setVehiclePlate(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-4 mb-5">
+            <input
+              className="bg-[#eeeeee] rounded px-4 py-2 w-1/2 text-base placeholder:text-sm"
+              required
+              type="number"
+              placeholder="Vehicle Capacity"
+              value={vehicleCapacity}
+              onChange={(e) => setVehicleCapacity(e.target.value)}
+            />
+            <select
+              className="bg-[#eeeeee] rounded px-4 py-2 w-1/2 text-base placeholder:text-sm"
+              required
+              value={vehicleType}
+              onChange={(e) => setVehicleType(e.target.value)}
+            >
+              <option value="" disabled>
+                Select Vehicle Type
+              </option>
+              <option value="car">Car</option>
+              <option value="auto">Auto</option>
+              <option value="motorcycle">Moto</option>
+            </select>
+          </div>
           <button className="bg-[#111] text-white font-semibold mb-3 rounded px-4 py-2 w-full text-lg placeholder:text-base">
-            Register
+            Create Captain Account
           </button>
           <p className="text-center">
             Already have a account?

@@ -1,18 +1,30 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { CaptainDataContext } from "../context/CaptainContext";
+import axios from "axios";
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [captainData, setCaptainData] = useState({});
-  
-    const submitHandler = (e) => {
-      e.preventDefault();
-      setCaptainData({ email: email, password: password });
-  
-      setEmail("");
-      setPassword("");
-    };
+  const [password, setPassword] = useState("");
+  const [captainData, setCaptainData] = useState({});
+  const Navigate = useNavigate();
+  const { captain, setCaptain } = useContext(CaptainDataContext);
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const captain = { email: email, password: password };
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/captains/login`,
+      captain
+    );
+    if (response.status === 200) {
+      const data = response.data;
+      setCaptain(data.captain);
+      localStorage.setItem("token", data.token);
+      Navigate("/captain-home");
+    }
+    setEmail("");
+    setPassword("");
+  };
   return (
     <div className="p-5 h-screen flex flex-col justify-between">
       <div>
@@ -66,6 +78,6 @@ const CaptainLogin = () => {
       </div>
     </div>
   );
-}
+};
 
-export default CaptainLogin
+export default CaptainLogin;
