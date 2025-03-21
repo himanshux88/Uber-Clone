@@ -22,25 +22,35 @@ const LookingForDriver = (props) => {
           <div className="flex items-center gap-5 p-3 border-b-2 border-gray-200">
             <i className="text-lg ri-map-pin-user-fill"></i>
             <div>
-              <h3 className="text-lg font-medium">565/11-A</h3>
+              <h3 className="text-lg font-medium">
+                {props.vehicleFoundPickup?.structured_formatting?.main_text ||
+                  "Pickup location not selected"}
+              </h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Vishnu Garden,New Delhi
+                {props.vehicleFoundPickup?.structured_formatting
+                  ?.secondary_text || "Pickup location not selected"}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 border-b-2 border-gray-200">
             <i className="text-lg ri-map-pin-2-fill"></i>
             <div>
-              <h3 className="text-lg font-medium">565/11-A</h3>
+              <h3 className="text-lg font-medium">
+                {props.vehicleFoundDestination?.structured_formatting
+                  ?.main_text || "Destination location not selected"}
+              </h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Vishnu Garden,New Delhi
+                {props.vehicleFoundDestination?.structured_formatting
+                  ?.secondary_text || "Destination location not selected"}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 ">
             <i className="text-lg ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">₹192.20</h3>
+              <h3 className="text-lg font-medium">
+                ₹{props.fare[props.vehicleType]}
+              </h3>
               <p className="text-sm -mt-1 text-gray-600">Cash Cash</p>
             </div>
           </div>
