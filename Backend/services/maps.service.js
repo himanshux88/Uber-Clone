@@ -67,8 +67,8 @@ module.exports.getAutoCompleteSuggestions = async(input) => {
     )}&types=address&key=${apiKey}`;
     try{
         const response = await axios.get(url)
-        
         if (response.data.status === 'OK') {
+          console.log(response)
             return response.data.predictions;
         } else {
             

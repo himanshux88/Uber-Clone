@@ -1,11 +1,25 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ConfirmRidePopUp = (props) => {
   const [otp,setOtp] = useState('')
-  const submitHandler = (e) =>{
+  const navigate = useNavigate()
+  const submitHandler = async(e) =>{
     e.preventDefault();
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/start-ride`,{
+params:{rideId:props.ride._id,
+      otp:otp},headers:{
+        Authorization:`Bearer ${localStorage.getItem('token')}`
+      }
+    })
 
+    if(response.status === 200){
+      props.setConfirmRidePopupPanel(false)
+      props.setRidePopupPanel(false)
+      navigate('/captain-riding',{state:{ride:props.ride}})
+    }
 
   }
   return (
@@ -28,7 +42,7 @@ const ConfirmRidePopUp = (props) => {
             src="https://i.pinimg.com/originals/0f/3c/3c/0f3c3c76a16f10d43bf0b0c144cea281.png"
             alt=""
           />
-          <h2 className="text-lg font-medium">Rakhi</h2>
+          <h2 className="text-lg font-medium capitalize">{props.ride?.user.fullname.firstname}</h2>
         </div>
         <h5 className="text-lg font-semibold">2.2KM</h5>
       </div>
@@ -39,7 +53,7 @@ const ConfirmRidePopUp = (props) => {
             <div>
               <h3 className="text-lg font-medium">565/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Vishnu Garden,New Delhi
+                {props.ride?.pickup}
               </p>
             </div>
           </div>
@@ -48,14 +62,14 @@ const ConfirmRidePopUp = (props) => {
             <div>
               <h3 className="text-lg font-medium">565/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Vishnu Garden,New Delhi
+                {props.ride?.destination}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 ">
             <i className="text-lg ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">₹192.20</h3>
+              <h3 className="text-lg font-medium">₹{props.ride?.fare}</h3>
               <p className="text-sm -mt-1 text-gray-600">Cash Cash</p>
             </div>
           </div>
@@ -74,13 +88,13 @@ const ConfirmRidePopUp = (props) => {
               className='bg-[#eee] px-6 py-4 font-mono text-base rounded-lg w-full mt-5'
               placeholder="Enter OTP"
             />
-            <Link
-              to="/captain-riding"
+            <button
+              
               onClick={() => {props.confirmRide();}}
               className="w-full mt-5 p-2 flex text-lg justify-center bg-green-600 text-white font-semibold rounded-lg"
             >
               Confirm
-            </Link>
+            </button>
             <button
               onClick={() => {
                 

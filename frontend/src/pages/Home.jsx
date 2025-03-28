@@ -10,6 +10,8 @@ import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import { SocketContext } from "../context/SocketContext";
 import { UserDataContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import LiveTracking from "../components/LiveTracking";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -30,10 +32,10 @@ const Home = () => {
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
-
+  const [ride,setRide] = useState(null)
   const { socket } = useContext(SocketContext);
   const { user } = useContext(UserDataContext);
-
+  const navigate = useNavigate()
   useEffect(() => {
     socket.emit("join", { userId: user._id,userType: "user" });
   });
@@ -42,8 +44,14 @@ const Home = () => {
     setVehicleFound(false);
     setVehiclePanelOpen(false)
     setWaitingForDriver(true);
+    setRide(ride)
     
   });
+
+  socket.on('ride-started',(ride) =>{
+    setWaitingForDriver(false);
+    navigate('/riding',{state:{ride}})
+  })
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -200,16 +208,12 @@ const Home = () => {
   return (
     <div className="h-screen relative overflow-hidden">
       <img
-        className="w-16  absolute left-5 top-5"
+        className="w-16  absolute left-5 top-5 z-1"
         src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.recruitics.com%2Fhubfs%2Fuber%2520Logo.png&f=1&nofb=1&ipt=f2cf2754ec90059d3a702f16bb1b104fb00aaa193351083e09df112b59c00548&ipo=images"
         alt=""
       />
       <div className="h-screen w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/max/1280/0*gwMx05pqII5hbfmX.gif"
-          alt=""
-        />
+       <LiveTracking/>
       </div>
       <div className="flex flex-col justify-end h-screen absolute top-0 w-full ">
         <div className="h-[35%] p-6 bg-white relative">
@@ -319,7 +323,7 @@ const Home = () => {
         ref={waitingForDriverRef}
         className="fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-6 pt-12"
       >
-        <WaitingForDriver waitingForDriver={waitingForDriver} setWaitingForDriver={setWaitingForDriver}/>
+        <WaitingForDriver waitingForDriver={waitingForDriver} setWaitingForDriver={setWaitingForDriver} ride={ride}/>
       </div>
     </div>
   );
