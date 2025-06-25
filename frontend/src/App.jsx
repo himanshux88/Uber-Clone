@@ -14,6 +14,7 @@ import CaptainHome from "./pages/CaptainHome";
 import CaptainProtectWrapper from "./pages/CaptainProtectWrapper";
 import Riding from "./pages/Riding";
 import CaptainRiding from "./pages/CaptainRiding";
+import { LoadScript } from "@react-google-maps/api";
 
 const App = () => {
   return (
