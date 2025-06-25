@@ -39,7 +39,7 @@ const LiveTracking = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 const { latitude, longitude } = position.coords;
 
-                console.log('Position updated:', latitude, longitude);
+                
                 setCurrentPosition({
                     lat: latitude,
                     lng: longitude
@@ -54,7 +54,7 @@ const LiveTracking = () => {
     }, []);
 
     return (
-        <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+        
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={currentPosition}
@@ -62,7 +62,7 @@ const LiveTracking = () => {
             >
                 <Marker position={currentPosition} />
             </GoogleMap>
-        </LoadScript>
+        
     )
 }
 

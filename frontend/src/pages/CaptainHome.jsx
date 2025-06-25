@@ -43,6 +43,7 @@ const CaptainHome = () => {
   }, []);
 
   socket.on("new-ride", (data) => {
+    
     setRide(data);
     setRidePopupPanel(true);
   });

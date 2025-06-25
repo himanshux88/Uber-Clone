@@ -150,7 +150,7 @@ const Home = () => {
       );
       setPickupSuggestions(response.data);
     } catch (err) {
-      console.log(err);
+      
     }
   };
 
